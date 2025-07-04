@@ -1,4 +1,4 @@
-#include "sgp4sdp4/sgp4sdp4.h"
+#include "sgp4sdp4.h"
 
 char tle_line_1[70];
 char tle_line_2[70];

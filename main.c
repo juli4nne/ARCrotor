@@ -11,6 +11,14 @@
 
 #define SGP4SDP4_CONSTANTS
 #include "sgp4sdp4.h"
+#include <math.h>
+#include <stdio.h>
+#include <string.h>
+#include <stdlib.h>
+#include <time.h>
+#include <sys/time.h>
+#include <unistd.h>
+#include <ctype.h>
 
 /* Main program */
   int
