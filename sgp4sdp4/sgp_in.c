@@ -184,12 +184,12 @@ Input_Tle_Set( char *tle_file, tle_t *tle)
   char sat_name[sizeof(tle->sat_name)]; /* Temp var for satellite name */
   char tle_set[139]; /* Two lines of a TLE set */
 
-  /* File pointer for opening TLE source file */
+  // File pointer for opening TLE source file
   FILE *fp;
 
-  /* Open TLE file, abort on failure */
+  // Open TLE file, abort on failure
   if( (fp = fopen( tle_file, "r")) == NULL )
-	return(-1);
+	return(-1); 
 
   /* Read the satellite's name */
   fgets(sat_name, sizeof(sat_name), fp);
