@@ -61,7 +61,6 @@ typedef struct
 	ds50;
 } deep_arg_t;
 
-#ifdef SGP4SDP4_CONSTANTS
 
 /** Table of constant values **/
 #define de2ra    1.74532925E-2   /* Degrees to Radians */
@@ -127,7 +126,6 @@ typedef struct
 #define CR  0x0A
 #define LF  0x0D
 
-#endif
 
 /* Flow control flag definitions */
 #define ALL_FLAGS              -1
@@ -380,44 +378,44 @@ Convert_Satellite_Data( char *tle_set, tle_t *tle )
 /* element lines exist, this function will fail. Returns */
 /* -1 if file open fails and -2 if TLE set is not valid  */
   int
-Input_Tle_Set( char *tle_file, tle_t *tle)
+Input_Tle_Set( char *tleStr, tle_t *tle)
 {
   int chr;  /* Used for inputting characters */
 
-  char sat_name[sizeof(tle->sat_name)]; /* Temp var for satellite name */
-  char tle_set[139]; /* Two lines of a TLE set */
+  /*char sat_name[sizeof(tle->sat_name)]; /* Temp var for satellite name 
+  char tle_set[139]; /* Two lines of a TLE set 
 
   // File pointer for opening TLE source file
   FILE *fp;
 
   // Open TLE file, abort on failure
   if( (fp = fopen( tle_file, "r")) == NULL )
-	return(-1); 
+	return(-1); */
 
-  /* Read the satellite's name */
+  /* Read the satellite's name 
   fgets(sat_name, sizeof(sat_name), fp);
   strncpy(tle->sat_name, sat_name, sizeof(tle->sat_name));
   tle->sat_name[sizeof(tle->sat_name)-1] = 0;
 
-  /* Read in first line of TLE set */
+  /* Read in first line of TLE set 
   fgets( tle_set, 70, fp );
 
-  /* Dump CR/LF, put back last character */
+  /* Dump CR/LF, put back last character 
   while( ((chr = fgetc(fp)) == CR) || (chr == LF) );
   ungetc(chr,fp);
 
-  /* Read in second line of TLE set and terminate string */
+  /* Read in second line of TLE set and terminate string 
   fgets( &tle_set[69], 70, fp );
   tle_set[138]='\0';
 
-  fclose(fp);
+  fclose(fp); */
 
   /* Check TLE set and abort if not valid */
-  if( !Good_Elements(tle_set) )
+  if( !Good_Elements(tleStr) )
 	return(-2);
 
   /* Convert the TLE set to orbital elements */
-  Convert_Satellite_Data( tle_set, tle );
+  Convert_Satellite_Data( tleStr, tle );
 
   return(0);
 } /* End of Input_Tle_Set() */
