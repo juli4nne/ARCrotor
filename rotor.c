@@ -173,37 +173,6 @@ int doThis() {
     
     return 0;
 
-	/* //satellite representation
-	predict_orbital_elements_t *orbital_elements;
-	orbital_elements = predict_parse_tle(tle_line_1, tle_line_2);
-
-	//containers for time-dependent properties
-	struct predict_position orbit; //independent of an observer
-	struct predict_observation observation; //relative to an observer
-
-	//prediction time
-	predict_julian_date_t pred_time;
-	pred_time = predict_to_julian(time(NULL));
-
-	//calculate point along satellite orbit
-	predict_orbit(orbital_elements, &orbit, pred_time);
-	printf("%f %f\n", orbit.latitude, orbit.longitude);
-
-	//observe the orbit
-	double latitude = 63.42;
-	double longitude = 10.39;
-	predict_observer_t *observer;
-	observer = predict_create_observer("LA1K", latitude/180.0*M_PI, longitude/180.0*M_PI, 0);
-	predict_observe_orbit(observer, &orbit, &observation);
-	printf("%f %f\n", observation.azimuth, observation.elevation);
-
-	//calculate time for the next time satellite passes over the horizon
-	struct predict_observation aos = predict_next_aos(observer, orbital_elements, pred_time);
-	double time_to_aos = (aos.time - pred_time)*24*60;
-	printf("Time to next AOS: %d minutes\n", time_to_aos);
-
-	//calculate doppler shift
-	double doppler_shift = predict_doppler_shift(&observation, downlink_frequency); */
 }
 
 int main(){
@@ -211,4 +180,5 @@ int main(){
     for(int i = 0; i < 10; i++){
         doThis();
     }
+    return 0;
 }
