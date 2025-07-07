@@ -70,6 +70,9 @@ char* readHTML(char* filename, int type){
         case 2: 
         sprintf(header, "HTTP/1.1 302 Found\nLocation: %s\nContent-Type: text/html\nContent-Length: ", filename);
         break;
+
+        case 3: strcpy(header, "HTTP/1.1 200 OK\nContent-Type: text/javascript\nContent-Length: ");
+        break;
     }
 
     char contentLength[6];
@@ -85,18 +88,37 @@ char* readHTML(char* filename, int type){
 }
 
 int main() {
-	struct Server server = serverConstructor(AF_INET, SOCK_STREAM, 0, INADDR_ANY, 1234, 10);
+    struct Server server = serverConstructor(AF_INET, SOCK_STREAM, 0, INADDR_ANY, 1234, 10);
 
-	printf("Waiting for connection at 127.0.0.1:1234\n");
-	int addrlen = sizeof(server.address);
-	
-	int newSocket = accept(server.socket, (struct sockaddr *)&server.address, (socklen_t*)&addrlen);
-    char* web = readHTML("geo_input.html",1);
-	int bytesSent = send(newSocket, web, strlen(web), 0);
+    printf("Waiting for connection at 127.0.0.1:1234\n");
+    int addrlen = sizeof(server.address);
+
+    char buffer[1000];
+
+    int newSocket = accept(server.socket, (struct sockaddr *)&server.address, (socklen_t*)&addrlen);
+    int bytesRead = recv(newSocket, buffer, sizeof(buffer) - 1, 0);
+    int load1 = 0;
+    int load2 = 0;
+    char* web = (char*)malloc(100000*sizeof(char));
+    int bytesSent = 0;
+    while(load1 == 0 || load2 == 0){
+        if(strncmp(buffer, "GET / ", 6) == 0){
+            strcpy(web, readHTML("geo_input.html",1));
+            bytesSent = send(newSocket, web, strlen(web), 0);
+            load1 = 1;
+            recv(newSocket, buffer, sizeof(buffer) - 1, 0);
+        } else if(strncmp(buffer, "GET /jquery.js", 14) == 0){
+            strcpy(web, readHTML("jquery.js",3));
+            bytesSent = send(newSocket, web, strlen(web), 0);
+            load2 = 1;
+            recv(newSocket, buffer, sizeof(buffer) - 1, 0);
+        }
+    }
     
-	struct pollfd serverPoll[1];
-	serverPoll[0].fd = newSocket;
-	serverPoll[0].events = POLLIN;
+
+    struct pollfd serverPoll[1];
+    serverPoll[0].fd = newSocket;
+    serverPoll[0].events = POLLIN;
 
     double lat, lon, height;
 
@@ -107,7 +129,7 @@ int main() {
             break;
         }
         if(serverPoll[0].revents & POLLIN){
-            char buffer[1000];
+            strcpy(buffer, "\0");
             int newSocket = accept(server.socket, (struct sockaddr *)&server.address, (socklen_t*)&addrlen);
             int bytesRead = recv(newSocket, buffer, sizeof(buffer) - 1, 0);
             if (bytesRead < 0){
@@ -174,7 +196,7 @@ int main() {
     char temp2[70] = "\0";
     
     // newSocket = accept(server.socket, (struct sockaddr *)&server.address, (socklen_t*)&addrlen);
-    web = readHTML("tle_input.html",2);
+    strcpy(web, readHTML("tle_input.html",2));
 	bytesSent = send(newSocket, web, strlen(web), 0);
 
 
