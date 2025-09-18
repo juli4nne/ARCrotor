@@ -98,19 +98,13 @@ int main() {
     int newSocket = accept(server.socket, (struct sockaddr *)&server.address, (socklen_t*)&addrlen);
     int bytesRead = recv(newSocket, buffer, sizeof(buffer) - 1, 0);
     int load1 = 0;
-    int load2 = 0;
     char* web = (char*)malloc(100000*sizeof(char));
     int bytesSent = 0;
-    while(load1 == 0 || load2 == 0){
+    while(load1 == 0){
         if(strncmp(buffer, "GET / ", 6) == 0){
             strcpy(web, readHTML("geo_input.html",1));
             bytesSent = send(newSocket, web, strlen(web), 0);
             load1 = 1;
-            recv(newSocket, buffer, sizeof(buffer) - 1, 0);
-        } else if(strncmp(buffer, "GET /jquery.js", 14) == 0){
-            strcpy(web, readHTML("jquery.js",3));
-            bytesSent = send(newSocket, web, strlen(web), 0);
-            load2 = 1;
             recv(newSocket, buffer, sizeof(buffer) - 1, 0);
         }
     }
@@ -130,8 +124,8 @@ int main() {
         }
         if(serverPoll[0].revents & POLLIN){
             strcpy(buffer, "\0");
-            int newSocket = accept(server.socket, (struct sockaddr *)&server.address, (socklen_t*)&addrlen);
-            int bytesRead = recv(newSocket, buffer, sizeof(buffer) - 1, 0);
+            newSocket = accept(server.socket, (struct sockaddr *)&server.address, (socklen_t*)&addrlen);
+            bytesRead = recv(newSocket, buffer, sizeof(buffer) - 1, 0);
             if (bytesRead < 0){
                 perror("Error reading form.");
                 break;
@@ -139,6 +133,8 @@ int main() {
             buffer[bytesRead] = '\0';
 
             if(strstr(buffer, "POST") != NULL){
+            	strcpy(web, readHTML("tle_input.html",1));
+	    	bytesSent = send(newSocket, web, strlen(web), 0);
                 char* temp = (char*)malloc(16*sizeof(char));
                 char* latData = strstr(buffer, "lat=");
                 if(latData != NULL){
@@ -196,8 +192,7 @@ int main() {
     char temp2[70] = "\0";
     
     // newSocket = accept(server.socket, (struct sockaddr *)&server.address, (socklen_t*)&addrlen);
-    strcpy(web, readHTML("tle_input.html",2));
-	bytesSent = send(newSocket, web, strlen(web), 0);
+    
 
 
     // user geodetic
